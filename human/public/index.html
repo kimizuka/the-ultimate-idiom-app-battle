@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>慣用句 is</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📖 慣用句 is</h1>
+    <nav>
+      <button id="tab-quiz" class="tab active">れんしゅう</button>
+      <button id="tab-stats" class="tab">せいせき</button>
+    </nav>
+  </header>
+
+  <!-- れんしゅう画面 -->
+  <main id="quiz-screen">
+    <section class="card question-card">
+      <p class="label">この慣用句（かんようく）を使って、例文（れいぶん）を作ってみよう！</p>
+      <p id="idiom" class="idiom"></p>
+      <button id="hint-btn" class="small-btn">💡 ヒントを見る</button>
+      <p id="meaning" class="meaning hidden"></p>
+    </section>
+
+    <section class="card input-card">
+      <textarea id="sentence" rows="3" placeholder="ここに例文を書いてね"></textarea>
+      <button id="grade-btn" class="big-btn">✏️ さいてんする！</button>
+    </section>
+
+    <section id="loading" class="card loading hidden">
+      <div class="spinner"></div>
+      <p>せんせいが よんでいるよ……</p>
+    </section>
+
+    <section id="result" class="card result-card hidden">
+      <p id="stars" class="stars"></p>
+      <p id="score" class="score"></p>
+      <p id="comment" class="comment"></p>
+      <div class="model-box">
+        <p class="label">🌸 お手本の例文</p>
+        <p id="model-sentence"></p>
+      </div>
+      <button id="next-btn" class="big-btn">➡️ つぎのもんだい</button>
+    </section>
+
+    <p id="error" class="error hidden"></p>
+  </main>
+
+  <!-- せいせき画面 -->
+  <main id="stats-screen" class="hidden">
+    <section class="card stats-summary">
+      <div class="stat"><span class="stat-num" id="stat-total">0</span><span class="stat-label">こたえた数</span></div>
+      <div class="stat"><span class="stat-num" id="stat-avg">-</span><span class="stat-label">へいきん点</span></div>
+      <div class="stat"><span class="stat-num" id="stat-progress">-</span><span class="stat-label">チャレンジした慣用句</span></div>
+    </section>
+
+    <section class="card">
+      <h2>💪 とっくんリスト（にがてかも？）</h2>
+      <ul id="weak-list" class="weak-list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>📝 これまでのきろく</h2>
+      <div id="history-list" class="history-list"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

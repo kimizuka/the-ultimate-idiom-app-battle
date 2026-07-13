@@ -1,0 +1,274 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Hiragino Maru Gothic ProN", "BIZ UDGothic", "Yu Gothic", sans-serif;
+  background: #fdf6ec;
+  color: #4a3f35;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  line-height: 1.7;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  color: #e8825a;
+  margin-bottom: 12px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab {
+  border: none;
+  background: #f3e3cf;
+  color: #8a7a68;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 8px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #e8825a;
+  color: #fff;
+  font-weight: bold;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 10px rgba(160, 120, 80, 0.12);
+}
+
+.label {
+  font-size: 0.85rem;
+  color: #a08a72;
+  margin-bottom: 8px;
+}
+
+.idiom {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 12px 0;
+  color: #3e6b8f;
+}
+
+ruby rt {
+  font-size: 0.85rem;
+  color: #8aa4bb;
+}
+
+.small-btn {
+  display: block;
+  margin: 0 auto;
+  border: 2px dashed #f0c14b;
+  background: #fff8e1;
+  color: #a08000;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.meaning {
+  margin-top: 12px;
+  background: #fff8e1;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1.15rem;
+  border: 2px solid #f3d9c0;
+  border-radius: 12px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #e8825a;
+}
+
+.big-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  border: none;
+  background: #e8825a;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.big-btn:active {
+  transform: scale(0.97);
+}
+
+.big-btn:disabled {
+  background: #d8c6b4;
+  cursor: wait;
+}
+
+.loading {
+  text-align: center;
+  color: #a08a72;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 10px;
+  border: 5px solid #f3e3cf;
+  border-top-color: #e8825a;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.result-card {
+  text-align: center;
+  border: 3px solid #ffd9a0;
+}
+
+.stars {
+  font-size: 2rem;
+  letter-spacing: 4px;
+}
+
+.score {
+  font-size: 2.4rem;
+  font-weight: bold;
+  color: #e8825a;
+  margin-bottom: 8px;
+}
+
+.comment {
+  text-align: left;
+  background: #eef7ee;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.model-box {
+  text-align: left;
+  background: #fdf0f5;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.error {
+  color: #c0392b;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* せいせき画面 */
+.stats-summary {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #3e6b8f;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #a08a72;
+}
+
+h2 {
+  font-size: 1.05rem;
+  color: #e8825a;
+  margin-bottom: 10px;
+}
+
+.weak-list {
+  list-style: none;
+}
+
+.weak-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px dashed #f0e0cc;
+  font-size: 1.05rem;
+}
+
+.weak-score {
+  color: #c0392b;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.history-item {
+  padding: 10px 4px;
+  border-bottom: 1px dashed #f0e0cc;
+}
+
+.history-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.history-score {
+  color: #e8825a;
+  white-space: nowrap;
+}
+
+.history-sentence {
+  color: #6b5d4f;
+  font-size: 0.95rem;
+}
+
+.history-date {
+  font-size: 0.75rem;
+  color: #b8a894;
+}
+
+.empty {
+  color: #a08a72;
+  text-align: center;
+  padding: 8px;
+}

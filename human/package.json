@@ -1,0 +1,13 @@
+{
+  "name": "kanyouku-is",
+  "version": "1.0.0",
+  "description": "慣用句 is",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js"
+  },
+  "dependencies": {
+    "express": "5.1.0"
+  }
+}
