@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+
+# APIキー等の機密情報（.env.example はコミットする）
+.env
+
+# 回答履歴（子どもの回答文が入るため個人情報保護の観点でコミットしない）
+human/data/history.json
