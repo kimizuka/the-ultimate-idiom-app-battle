@@ -1,0 +1,905 @@
+<title>かんようくクエスト</title>
+<style>
+  :root {
+    --bg: #FBF5E9;
+    --bg-deep: #F3EAD6;
+    --card: #FFFFFF;
+    --ink: #453A2E;
+    --ink-soft: #8A7B66;
+    --line: #E8DCC4;
+    --shu: #D9503F;          /* 朱色 — はんこ・主アクション */
+    --shu-soft: #FBE3DE;
+    --body-c: #D9503F;       /* からだ */
+    --body-bg: #FBE3DE;
+    --animal-c: #3F8A4E;     /* どうぶつ */
+    --animal-bg: #DFF0DE;
+    --life-c: #3D6FB8;       /* くらし */
+    --life-bg: #DEE9F8;
+    --sun: #F2A93B;
+    --ok: #2E8B57;
+    --ng: #4C6FB0;
+    --shadow: 0 3px 0 rgba(122, 100, 66, .18);
+  }
+  :root[data-theme="dark"] { --dm: 1; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #2B2620;
+      --bg-deep: #241F1A;
+      --card: #38322A;
+      --ink: #F2E9D8;
+      --ink-soft: #B3A78F;
+      --line: #4C443A;
+      --shu: #E8705F;
+      --shu-soft: #4D332E;
+      --body-c: #E8705F;   --body-bg: #4D332E;
+      --animal-c: #6FBA7D; --animal-bg: #2F4230;
+      --life-c: #7BA3DC;   --life-bg: #2E3A4E;
+      --sun: #F2B558;
+      --ok: #5DBB86;
+      --ng: #8AA5D6;
+      --shadow: 0 3px 0 rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #2B2620;
+    --bg-deep: #241F1A;
+    --card: #38322A;
+    --ink: #F2E9D8;
+    --ink-soft: #B3A78F;
+    --line: #4C443A;
+    --shu: #E8705F;
+    --shu-soft: #4D332E;
+    --body-c: #E8705F;   --body-bg: #4D332E;
+    --animal-c: #6FBA7D; --animal-bg: #2F4230;
+    --life-c: #7BA3DC;   --life-bg: #2E3A4E;
+    --sun: #F2B558;
+    --ok: #5DBB86;
+    --ng: #8AA5D6;
+    --shadow: 0 3px 0 rgba(0, 0, 0, .35);
+  }
+  :root[data-theme="light"] {
+    --bg: #FBF5E9;
+    --bg-deep: #F3EAD6;
+    --card: #FFFFFF;
+    --ink: #453A2E;
+    --ink-soft: #8A7B66;
+    --line: #E8DCC4;
+    --shu: #D9503F;
+    --shu-soft: #FBE3DE;
+    --body-c: #D9503F;   --body-bg: #FBE3DE;
+    --animal-c: #3F8A4E; --animal-bg: #DFF0DE;
+    --life-c: #3D6FB8;   --life-bg: #DEE9F8;
+    --sun: #F2A93B;
+    --ok: #2E8B57;
+    --ng: #4C6FB0;
+    --shadow: 0 3px 0 rgba(122, 100, 66, .18);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", "Yu Gothic", "Meiryo", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  ruby rt { font-size: .48em; color: var(--ink-soft); letter-spacing: .05em; }
+
+  #app {
+    max-width: 520px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 10px;
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border: 3px solid var(--shu);
+    border-radius: 50%;
+    color: var(--shu);
+    font-size: 15px;
+    font-weight: 800;
+    transform: rotate(-8deg);
+  }
+  #soundBtn {
+    border: 2px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  main {
+    flex: 1;
+    padding: 4px 16px 96px;
+  }
+
+  /* ------- 共通パーツ ------- */
+  .card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: transform .08s;
+  }
+  .btn:active { transform: translateY(2px); box-shadow: none; }
+  .btn.primary {
+    background: var(--shu);
+    border-color: var(--shu);
+    color: #FFF8F0;
+  }
+  .btn:focus-visible, #soundBtn:focus-visible, .choice:focus-visible, .zk-item:focus-visible, .navbtn:focus-visible {
+    outline: 3px solid var(--sun);
+    outline-offset: 2px;
+  }
+  .chip {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 1px 10px;
+    border-radius: 999px;
+  }
+  .chip.body   { color: var(--body-c);   background: var(--body-bg); }
+  .chip.animal { color: var(--animal-c); background: var(--animal-bg); }
+  .chip.life   { color: var(--life-c);   background: var(--life-bg); }
+
+  .section-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .18em;
+    color: var(--ink-soft);
+    margin: 22px 2px 8px;
+  }
+
+  /* ------- ホーム ------- */
+  .today {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 18px;
+  }
+  .today .idiom-big { font-size: 27px; font-weight: 800; margin: 6px 0 2px; }
+  .today .imi { color: var(--ink-soft); font-size: 15.5px; }
+  .levelbar { margin-top: 4px; }
+  .levelbar .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .levelbar .title-badge { color: var(--shu); font-size: 16px; }
+  .meter {
+    height: 14px;
+    background: var(--bg-deep);
+    border-radius: 999px;
+    border: 2px solid var(--line);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .meter > div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sun), var(--shu));
+    border-radius: 999px;
+    transition: width .5s;
+  }
+  .modes { display: grid; gap: 12px; margin-top: 10px; }
+  .mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    padding: 16px;
+  }
+  .mode-btn .ico {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex: none;
+  }
+  .mode-btn .ico.a { background: var(--body-bg); }
+  .mode-btn .ico.b { background: var(--animal-bg); }
+  .mode-btn .ico.c { background: var(--life-bg); }
+  .mode-btn small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 13px; line-height: 1.4; }
+
+  /* ------- おぼえる ------- */
+  .cat-grid { display: grid; gap: 12px; }
+  .flashwrap { display: flex; flex-direction: column; gap: 14px; }
+  .flash {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 26px 20px;
+  }
+  .flash .idiom-big { font-size: 30px; font-weight: 800; line-height: 1.9; }
+  .flash .answer { border-top: 2px dashed var(--line); padding-top: 14px; width: 100%; }
+  .flash .imi { font-size: 18px; font-weight: 700; }
+  .flash .rei { font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+  .flash .hint { color: var(--ink-soft); font-size: 14px; }
+  .flash-actions { display: flex; gap: 10px; justify-content: center; }
+  .flash-actions .btn { flex: 1; max-width: 200px; }
+  .progress-note { text-align: center; color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+
+  /* ------- クイズ ------- */
+  .quiz-q { text-align: center; padding: 22px 18px; }
+  .quiz-q .ask { font-size: 14px; font-weight: 800; color: var(--ink-soft); letter-spacing: .1em; }
+  .quiz-q .idiom-big { font-size: 27px; font-weight: 800; line-height: 1.9; margin-top: 6px; }
+  .quiz-q .blank { color: var(--shu); font-weight: 800; }
+  .choices { display: grid; gap: 10px; margin-top: 14px; }
+  .choice {
+    font-family: inherit;
+    font-size: 16.5px;
+    font-weight: 700;
+    text-align: left;
+    background: var(--card);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 12px 16px;
+    cursor: pointer;
+    line-height: 1.6;
+  }
+  .choice:active { transform: translateY(2px); box-shadow: none; }
+  .choice.correct { border-color: var(--ok); background: var(--animal-bg); }
+  .choice.wrong   { border-color: var(--ng); background: var(--life-bg); opacity: .85; }
+  .choice[disabled] { cursor: default; }
+  .qcount { text-align: center; font-size: 14px; font-weight: 800; color: var(--ink-soft); margin-bottom: 8px; }
+  .qdots { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
+  .qdots span {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    border: 2px solid var(--line);
+  }
+  .qdots span.hit  { background: var(--shu);  border-color: var(--shu); }
+  .qdots span.miss { background: var(--ng);   border-color: var(--ng); }
+
+  /* はんこ演出 */
+  .hanko-layer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 60;
+  }
+  .hanko {
+    width: 170px; height: 170px;
+    border-radius: 50%;
+    border: 6px solid var(--shu);
+    color: var(--shu);
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    transform: rotate(-12deg);
+    animation: slam .45s cubic-bezier(.2, 1.6, .4, 1) forwards;
+  }
+  .hanko .big { font-size: 44px; line-height: 1; }
+  .hanko .word { font-size: 18px; margin-top: 6px; }
+  .hanko.ng { border-color: var(--ng); color: var(--ng); animation: shake .5s; }
+  @keyframes slam {
+    0%   { transform: rotate(-30deg) scale(2.6); opacity: 0; }
+    60%  { transform: rotate(-12deg) scale(.95); opacity: 1; }
+    100% { transform: rotate(-12deg) scale(1);   opacity: 1; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: rotate(-6deg) translateX(0); }
+    25% { transform: rotate(-6deg) translateX(-8px); }
+    75% { transform: rotate(-6deg) translateX(8px); }
+  }
+
+  /* 結果 */
+  .result { text-align: center; padding: 30px 20px; }
+  .result .score { font-size: 46px; font-weight: 800; color: var(--shu); }
+  .result .msg { font-size: 18px; font-weight: 700; margin-top: 4px; }
+  .hanamaru {
+    width: 120px; height: 120px;
+    margin: 14px auto 4px;
+    display: block;
+  }
+
+  /* ------- ずかん ------- */
+  .zk-group { margin-bottom: 6px; }
+  .zk-list { display: flex; flex-direction: column; gap: 8px; }
+  .zk-item {
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+    background: var(--card);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .zk-item .head { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .zk-item .star { margin-left: auto; font-size: 15px; }
+  .zk-item .detail { display: none; border-top: 2px dashed var(--line); margin-top: 8px; padding-top: 8px; font-size: 15px; }
+  .zk-item.open .detail { display: block; }
+  .zk-item .detail .rei { color: var(--ink-soft); font-size: 14px; }
+  .stamp-shelf {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px;
+  }
+  .stamp-shelf .empty { color: var(--ink-soft); font-size: 14.5px; }
+  .stamp {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    border: 3px solid var(--shu);
+    color: var(--shu);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    transform: rotate(-8deg);
+    background: var(--card);
+  }
+  .stamp .s { font-size: 20px; line-height: 1.1; }
+  .stamp.perfect { border-color: var(--sun); color: var(--sun); }
+
+  /* ------- ナビ ------- */
+  nav.tabs {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    background: var(--card);
+    border-top: 2px solid var(--line);
+    padding: 6px 0 calc(8px + env(safe-area-inset-bottom));
+    z-index: 40;
+  }
+  nav.tabs .inner { display: flex; width: 100%; max-width: 520px; }
+  .navbtn {
+    flex: 1;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 4px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .navbtn .nico { font-size: 22px; }
+  .navbtn.active { color: var(--shu); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hanko, .hanko.ng { animation: none; }
+    .meter > div { transition: none; }
+  }
+</style>
+
+<div id="app">
+  <header class="top">
+    <div class="logo"><span class="mark">句</span>かんようくクエスト</div>
+    <button id="soundBtn" aria-label="おとのオン・オフ">🔊</button>
+  </header>
+  <main id="view"></main>
+  <nav class="tabs">
+    <div class="inner">
+      <button class="navbtn" data-tab="home"><span class="nico">🏠</span>ホーム</button>
+      <button class="navbtn" data-tab="learn"><span class="nico">🃏</span>おぼえる</button>
+      <button class="navbtn" data-tab="quiz"><span class="nico">✏️</span>クイズ</button>
+      <button class="navbtn" data-tab="book"><span class="nico">📖</span>ずかん</button>
+    </div>
+  </nav>
+</div>
+<div class="hanko-layer" id="hankoLayer"></div>
+
+<script>
+"use strict";
+
+/* ======== データ ========
+   t: 慣用句({漢字|よみ} 形式でふりがな) / imi: 意味 / rei: 例文
+   cat: body(からだ) animal(どうぶつ) life(くらし) / key: 穴うめクイズで隠すことば */
+const IDIOMS = [
+  // からだ
+  { t: "{頭|あたま}が{上|あ}がらない", imi: "相手にかなわなくて、いばれない。", rei: "いつも{宿題|しゅくだい}を手伝ってくれる姉には、頭が上がらない。", cat: "body", key: "頭" },
+  { t: "{頭|あたま}を{冷|ひ}やす", imi: "気持ちを落ち着かせる。", rei: "けんかのあとは、頭を冷やしてから話そう。", cat: "body", key: "頭" },
+  { t: "{目|め}がない", imi: "大好きでたまらない。", rei: "ぼくはプリンに目がない。", cat: "body", key: "目" },
+  { t: "{目|め}を{丸|まる}くする", imi: "びっくりして、目を大きく開ける。", rei: "手品を見て、みんな目を丸くした。", cat: "body", key: "目" },
+  { t: "{目|め}から{鼻|はな}へぬける", imi: "とてもかしこくて、りこうなこと。", rei: "妹は目から鼻へぬけるようにかしこい。", cat: "body", key: "目" },
+  { t: "{耳|みみ}が{痛|いた}い", imi: "自分の悪いところを言われて、聞くのがつらい。", rei: "「早くねなさい」と言われると耳が痛い。", cat: "body", key: "耳" },
+  { t: "{耳|みみ}にたこができる", imi: "同じ話を何度も聞かされて、いやになる。", rei: "その話は耳にたこができるほど聞いたよ。", cat: "body", key: "耳" },
+  { t: "{鼻|はな}が{高|たか}い", imi: "ほこらしくて、じまんしたい気持ち。", rei: "兄がリレーで一位になって、鼻が高い。", cat: "body", key: "鼻" },
+  { t: "{口|くち}が{軽|かる}い", imi: "ひみつをすぐ人に話してしまう。", rei: "口が軽い人にはひみつを話せない。", cat: "body", key: "口" },
+  { t: "{口|くち}をすっぱくする", imi: "同じことを何度も注意する。", rei: "母は口をすっぱくして「手を洗いなさい」と言う。", cat: "body", key: "口" },
+  { t: "{開|あ}いた{口|くち}がふさがらない", imi: "あきれて、ものが言えない。", rei: "部屋のちらかりように、開いた口がふさがらない。", cat: "body", key: "口" },
+  { t: "{首|くび}を{長|なが}くする", imi: "今か今かと、楽しみにして待つ。", rei: "遠足の日を首を長くして待つ。", cat: "body", key: "首" },
+  { t: "{肩|かた}を{落|お}とす", imi: "がっかりして、元気をなくす。", rei: "試合に負けて、みんな肩を落とした。", cat: "body", key: "肩" },
+  { t: "{胸|むね}をなでおろす", imi: "心配ごとがなくなって、ほっとする。", rei: "まい子の犬が見つかって、胸をなでおろした。", cat: "body", key: "胸" },
+  { t: "{腹|はら}を{立|た}てる", imi: "おこる。", rei: "弟はおやつを取られて腹を立てた。", cat: "body", key: "腹" },
+  { t: "{手|て}を{焼|や}く", imi: "うまくいかなくて、こまる。", rei: "いたずらばかりする子犬に手を焼く。", cat: "body", key: "手" },
+  { t: "{手|て}に{汗|あせ}をにぎる", imi: "どうなるかと、はらはらどきどきする。", rei: "手に汗をにぎる{大接戦|だいせっせん}だった。", cat: "body", key: "手" },
+  { t: "{足|あし}を{洗|あら}う", imi: "悪いことや、よくないことをやめる。", rei: "夜ふかしから足を洗うぞ。", cat: "body", key: "足" },
+  { t: "{足|あし}が{棒|ぼう}になる", imi: "歩きすぎて、足がひどくつかれる。", rei: "一日中歩いて、足が棒になった。", cat: "body", key: "足" },
+  { t: "{腕|うで}が{上|あ}がる", imi: "前よりも上手になる。", rei: "毎日練習したら、絵の腕が上がった。", cat: "body", key: "腕" },
+  { t: "{腕|うで}をみがく", imi: "もっと上手になるように、練習する。", rei: "大会に向けて腕をみがく。", cat: "body", key: "腕" },
+  { t: "{顔|かお}から{火|ひ}が{出|で}る", imi: "はずかしくて、顔が真っ赤になる。", rei: "人前で転んで、顔から火が出る思いだった。", cat: "body", key: "顔" },
+  { t: "{舌|した}を{巻|ま}く", imi: "あまりのすごさに、おどろいて感心する。", rei: "名人のわざに、みんな舌を巻いた。", cat: "body", key: "舌" },
+  { t: "{歯|は}が{立|た}たない", imi: "相手が強すぎて、かなわない。", rei: "兄には、うでずもうではまったく歯が立たない。", cat: "body", key: "歯" },
+  { t: "{骨|ほね}が{折|お}れる", imi: "とても大変で、苦労する。", rei: "大そうじは骨が折れる仕事だ。", cat: "body", key: "骨" },
+  { t: "へそを{曲|ま}げる", imi: "きげんを悪くして、すねる。", rei: "妹は負けるとすぐへそを曲げる。", cat: "body", key: "へそ" },
+  // どうぶつ
+  { t: "{猫|ねこ}の{手|て}も{借|か}りたい", imi: "いそがしすぎて、だれでもいいから手伝ってほしい。", rei: "お店は大いそがしで、猫の手も借りたいほどだ。", cat: "animal", key: "猫" },
+  { t: "{猫|ねこ}をかぶる", imi: "本当の自分をかくして、おとなしいふりをする。", rei: "妹はお客さんの前では猫をかぶる。", cat: "animal", key: "猫" },
+  { t: "{犬猿|けんえん}の{仲|なか}", imi: "とても仲が悪いこと。", rei: "あの二人は犬猿の仲で、いつもけんかしている。", cat: "animal" },
+  { t: "{馬|うま}が{合|あ}う", imi: "気が合って、仲よくできる。", rei: "転校生とは、ふしぎと馬が合う。", cat: "animal", key: "馬" },
+  { t: "すずめの{涙|なみだ}", imi: "ほんの少しであること。", rei: "おこづかいの残りは、すずめの涙ほどだ。", cat: "animal", key: "すずめ" },
+  { t: "{馬|うま}の{耳|みみ}に{念仏|ねんぶつ}", imi: "いくら言っても、少しも効き目がないこと。", rei: "弟に注意しても、馬の耳に念仏だ。", cat: "animal", key: "馬" },
+  { t: "{虫|むし}がいい", imi: "自分の都合ばかり考えて、ずうずうしい。", rei: "手伝わないのにおやつだけほしいなんて、虫がいい話だ。", cat: "animal", key: "虫" },
+  { t: "{猫|ねこ}のひたい", imi: "場所がとてもせまいこと。", rei: "猫のひたいほどの庭で野菜を育てる。", cat: "animal", key: "猫" },
+  { t: "{鶴|つる}の{一声|ひとこえ}", imi: "えらい人のひとことで、ものごとがぱっと決まること。", rei: "先生の鶴の一声で、遊びが決まった。", cat: "animal", key: "鶴" },
+  { t: "とらの{子|こ}", imi: "とても大切にしているもの。", rei: "ためたおこづかいは、ぼくのとらの子だ。", cat: "animal", key: "とら" },
+  { t: "{虫|むし}の{知|し}らせ", imi: "なんとなく、何かが起こりそうだと感じること。", rei: "虫の知らせがして、急いで家に帰った。", cat: "animal", key: "虫" },
+  { t: "たぬき{寝入|ねい}り", imi: "ねているふりをすること。", rei: "手伝いたくなくて、たぬき寝入りをした。", cat: "animal", key: "たぬき" },
+  // くらし
+  { t: "{油|あぶら}を{売|う}る", imi: "むだ話をして、やるべきことをなまける。", rei: "おつかいのとちゅうで油を売って、しかられた。", cat: "life" },
+  { t: "{水|みず}に{流|なが}す", imi: "前にあったいやなことを、なかったことにする。", rei: "けんかのことは水に流して、また遊ぼう。", cat: "life" },
+  { t: "{火花|ひばな}を{散|ち}らす", imi: "たがいに負けまいと、はげしく争う。", rei: "決勝戦で、二人は火花を散らした。", cat: "life" },
+  { t: "{息|いき}が{合|あ}う", imi: "気持ちやタイミングが、ぴったり合う。", rei: "息の合ったダンスで、{拍手|はくしゅ}をもらった。", cat: "life" },
+  { t: "{気|き}が{置|お}けない", imi: "えんりょしなくていいほど、仲がいい。", rei: "気が置けない友達と公園で遊んだ。", cat: "life" },
+  { t: "{花|はな}を{持|も}たせる", imi: "手がらを相手にゆずって、立ててあげる。", rei: "さいごの一問は弟に花を持たせた。", cat: "life" },
+  { t: "{板|いた}につく", imi: "役目や仕事が、その人にぴったり合ってくる。", rei: "委員長の仕事もすっかり板についた。", cat: "life" },
+  { t: "さじを{投|な}げる", imi: "もうだめだと、あきらめる。", rei: "むずかしいパズルに、とうとうさじを投げた。", cat: "life" },
+  { t: "しびれを{切|き}らす", imi: "待ちきれなくなる。", rei: "なかなか来ない友達に、しびれを切らした。", cat: "life" },
+  { t: "{図|ず}に{乗|の}る", imi: "調子に乗って、いい気になる。", rei: "ほめられて図に乗り、失敗した。", cat: "life" },
+  { t: "{羽|はね}を{伸|の}ばす", imi: "自由になって、のびのびする。", rei: "夏休みは、いなかで羽を伸ばした。", cat: "life" },
+  { t: "{雲|くも}をつかむよう", imi: "ぼんやりしていて、はっきりしないこと。", rei: "雲をつかむような話で、よく分からない。", cat: "life" },
+];
+IDIOMS.forEach((d, i) => { d.id = i; });
+
+const CATS = {
+  body:   { name: "からだ",   ico: "💪", cls: "body" },
+  animal: { name: "どうぶつ", ico: "🐱", cls: "animal" },
+  life:   { name: "くらし",   ico: "🏡", cls: "life" },
+};
+const KEY_POOL = {
+  body:   ["頭", "目", "耳", "鼻", "口", "首", "肩", "胸", "腹", "手", "足", "腕", "顔", "舌", "歯", "骨", "へそ"],
+  animal: ["猫", "馬", "すずめ", "虫", "鶴", "とら", "たぬき", "犬", "さる", "きつね"],
+};
+const KEY_YOMI = {
+  "頭": "あたま", "目": "め", "耳": "みみ", "鼻": "はな", "口": "くち", "首": "くび",
+  "肩": "かた", "胸": "むね", "腹": "はら", "手": "て", "足": "あし", "腕": "うで",
+  "顔": "かお", "舌": "した", "歯": "は", "骨": "ほね",
+  "猫": "ねこ", "馬": "うま", "鶴": "つる", "犬": "いぬ",
+};
+const LEVELS = [
+  [0,  "かんようく見習い"],
+  [10, "ことば探検家"],
+  [20, "かんようく名人"],
+  [35, "ことばの達人"],
+  [50, "かんようく博士"],
+];
+
+/* ======== 保存 ======== */
+const SAVE_KEY = "kanyoku-quest-v1";
+let save = { learned: [], stamps: [], sound: true };
+try {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (raw) save = Object.assign(save, JSON.parse(raw));
+} catch (e) { /* プライベートモード等では保存なしで動く */ }
+const learned = new Set(save.learned);
+function persist() {
+  save.learned = [...learned];
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {}
+}
+
+/* ======== ユーティリティ ======== */
+function rubyHTML(t) {
+  return t.replace(/\{([^|}]+)\|([^}]+)\}/g, "<ruby>$1<rt>$2</rt></ruby>");
+}
+function plainText(t) {
+  return t.replace(/\{([^|}]+)\|([^}]+)\}/g, "$1");
+}
+function blankHTML(t, key) {
+  const marked = new RegExp("\\{" + key + "\\|[^}]+\\}");
+  const rep = '<span class="blank">［ ？ ］</span>';
+  const ph = "\uE000"; // 私用領域文字を置換用プレースホルダに使う
+  const masked = marked.test(t) ? t.replace(marked, ph) : t.replace(key, ph);
+  return rubyHTML(masked).replace(ph, rep);
+}
+function keyLabel(k) {
+  return KEY_YOMI[k] ? `<ruby>${k}<rt>${KEY_YOMI[k]}</rt></ruby>` : k;
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function pick(arr, n) { return shuffle(arr).slice(0, n); }
+function levelTitle(n) {
+  let t = LEVELS[0][1];
+  for (const [min, name] of LEVELS) if (n >= min) t = name;
+  return t;
+}
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+/* ======== 音 ======== */
+let audioCtx = null;
+function beep(kind) {
+  if (!save.sound) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const seq = kind === "ok" ? [[660, 0, .12], [880, .13, .2]] : [[220, 0, .25]];
+    for (const [freq, at, dur] of seq) {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = "triangle";
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(.18, audioCtx.currentTime + at);
+      g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + at + dur);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(audioCtx.currentTime + at);
+      o.stop(audioCtx.currentTime + at + dur + .05);
+    }
+  } catch (e) {}
+}
+
+/* ======== はんこ演出 ======== */
+function showHanko(ok) {
+  const layer = document.getElementById("hankoLayer");
+  layer.innerHTML = ok
+    ? '<div class="hanko"><span class="big">◯</span><span class="word">せいかい!</span></div>'
+    : '<div class="hanko ng"><span class="big">✕</span><span class="word">ざんねん…</span></div>';
+  beep(ok ? "ok" : "ng");
+  setTimeout(() => { layer.innerHTML = ""; }, 900);
+}
+
+/* ======== 画面 ======== */
+const view = document.getElementById("view");
+let tab = "home";
+let learnState = null;   // { cards: [id...], pos, open }
+let quizState = null;    // { qs: [...], pos, correct, answered }
+
+function setTab(t) {
+  tab = t;
+  if (t === "learn") learnState = null;
+  if (t === "quiz") quizState = null;
+  render();
+}
+
+function render() {
+  document.querySelectorAll(".navbtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.tab === tab);
+  });
+  if (tab === "home") renderHome();
+  else if (tab === "learn") renderLearn();
+  else if (tab === "quiz") renderQuiz();
+  else renderBook();
+  window.scrollTo(0, 0);
+}
+
+/* ---- ホーム ---- */
+function renderHome() {
+  const day = Math.floor(Date.now() / 86400000);
+  const today = IDIOMS[day % IDIOMS.length];
+  const n = learned.size;
+  const cat = CATS[today.cat];
+  view.innerHTML = `
+    <div class="card today">
+      <span class="chip ${cat.cls}">きょうのかんようく</span>
+      <div class="idiom-big">${rubyHTML(today.t)}</div>
+      <div class="imi">${esc(today.imi)}</div>
+    </div>
+
+    <div class="section-label">がんばりメーター</div>
+    <div class="card levelbar">
+      <div class="row">
+        <span class="title-badge">${levelTitle(n)}</span>
+        <span>おぼえた ${n} / ${IDIOMS.length} 語</span>
+      </div>
+      <div class="meter"><div style="width:${(n / IDIOMS.length) * 100}%"></div></div>
+    </div>
+
+    <div class="section-label">あそびかたをえらぼう</div>
+    <div class="modes">
+      <button class="btn mode-btn" data-go="learn">
+        <span class="ico a">🃏</span>
+        <span>カードでおぼえる<small>めくって意味をたしかめよう</small></span>
+      </button>
+      <button class="btn mode-btn" data-go="quiz">
+        <span class="ico b">✏️</span>
+        <span>クイズにちょうせん<small>ぜんぶ当てて はなまるをもらおう</small></span>
+      </button>
+      <button class="btn mode-btn" data-go="book">
+        <span class="ico c">📖</span>
+        <span>かんようくずかん<small>おぼえたことばとスタンプ帳</small></span>
+      </button>
+    </div>`;
+  view.querySelectorAll("[data-go]").forEach(b => {
+    b.onclick = () => setTab(b.dataset.go);
+  });
+}
+
+/* ---- おぼえる ---- */
+function renderLearn() {
+  if (!learnState) {
+    view.innerHTML = `
+      <div class="section-label">どのなかまをおぼえる?</div>
+      <div class="cat-grid">
+        ${Object.entries(CATS).map(([k, c]) => {
+          const items = IDIOMS.filter(d => d.cat === k);
+          const done = items.filter(d => learned.has(d.id)).length;
+          return `<button class="btn mode-btn" data-cat="${k}">
+            <span class="ico ${c.cls === "body" ? "a" : c.cls === "animal" ? "b" : "c"}">${c.ico}</span>
+            <span>${c.name}のかんようく<small>${done} / ${items.length} 語 おぼえた</small></span>
+          </button>`;
+        }).join("")}
+        <button class="btn mode-btn" data-cat="all">
+          <span class="ico c">🎲</span>
+          <span>ぜんぶまぜて<small>50語からランダムに10まい</small></span>
+        </button>
+      </div>`;
+    view.querySelectorAll("[data-cat]").forEach(b => {
+      b.onclick = () => {
+        const k = b.dataset.cat;
+        const pool = k === "all" ? pick(IDIOMS, 10) : shuffle(IDIOMS.filter(d => d.cat === k));
+        learnState = { cards: pool.map(d => d.id), pos: 0, open: false };
+        render();
+      };
+    });
+    return;
+  }
+
+  const { cards, pos, open } = learnState;
+  if (pos >= cards.length) {
+    view.innerHTML = `
+      <div class="card result">
+        <div class="msg">カードはこれでおしまい!</div>
+        <div style="font-size:40px;margin:10px 0">🎉</div>
+        <p style="color:var(--ink-soft);font-size:15px">クイズでたしかめると、もっとおぼえられるよ。</p>
+        <div class="flash-actions" style="margin-top:10px">
+          <button class="btn" id="againBtn">もういちど</button>
+          <button class="btn primary" id="toQuiz">クイズへ</button>
+        </div>
+      </div>`;
+    view.querySelector("#againBtn").onclick = () => { learnState = null; render(); };
+    view.querySelector("#toQuiz").onclick = () => setTab("quiz");
+    return;
+  }
+
+  const d = IDIOMS[cards[pos]];
+  const cat = CATS[d.cat];
+  view.innerHTML = `
+    <div class="flashwrap">
+      <div class="progress-note">${pos + 1} / ${cards.length} まい</div>
+      <div class="card flash" id="flashCard" role="button" tabindex="0">
+        <span class="chip ${cat.cls}">${cat.ico} ${cat.name}</span>
+        <div class="idiom-big">${rubyHTML(d.t)}</div>
+        ${open ? `
+          <div class="answer">
+            <div class="imi">${esc(d.imi)}</div>
+            <div class="rei">📝 ${rubyHTML(d.rei)}</div>
+          </div>` : `
+          <div class="hint">タップして意味を見る 👆</div>`}
+      </div>
+      ${open ? `
+        <div class="flash-actions">
+          <button class="btn" id="notyet">まだまだ</button>
+          <button class="btn primary" id="gotit">おぼえた!</button>
+        </div>` : ""}
+    </div>`;
+  const cardEl = view.querySelector("#flashCard");
+  const reveal = () => { if (!learnState.open) { learnState.open = true; render(); } };
+  cardEl.onclick = reveal;
+  cardEl.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); reveal(); } };
+  if (open) {
+    view.querySelector("#gotit").onclick = () => {
+      learned.add(d.id);
+      persist();
+      learnState.pos++; learnState.open = false;
+      render();
+    };
+    view.querySelector("#notyet").onclick = () => {
+      learnState.cards.push(d.id);  // あとでもう一度出す
+      learnState.pos++; learnState.open = false;
+      render();
+    };
+  }
+}
+
+/* ---- クイズ ---- */
+function makeQuiz() {
+  const chosen = pick(IDIOMS, 5);
+  return chosen.map(d => {
+    const fillable = d.key && KEY_POOL[d.cat];
+    if (fillable && Math.random() < 0.5) {
+      const wrongs = pick(KEY_POOL[d.cat].filter(k => k !== d.key), 3);
+      return { type: "fill", d, choices: shuffle([d.key, ...wrongs]), answer: d.key };
+    }
+    const wrongs = pick(IDIOMS.filter(x => x.id !== d.id), 3).map(x => x.imi);
+    return { type: "imi", d, choices: shuffle([d.imi, ...wrongs]), answer: d.imi };
+  });
+}
+
+function renderQuiz() {
+  if (!quizState) {
+    quizState = { qs: makeQuiz(), pos: 0, correct: 0, marks: [], answered: false };
+  }
+  const st = quizState;
+
+  if (st.pos >= st.qs.length) {
+    const perfect = st.correct === st.qs.length;
+    if (!st.saved) {
+      st.saved = true;
+      save.stamps.push({ score: st.correct, total: st.qs.length, date: new Date().toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) });
+      if (save.stamps.length > 60) save.stamps = save.stamps.slice(-60);
+      persist();
+    }
+    view.innerHTML = `
+      <div class="card result">
+        ${perfect ? hanamaruSVG() : `<div style="font-size:52px;margin-bottom:4px">${st.correct >= 3 ? "😊" : "💪"}</div>`}
+        <div class="score">${st.correct} / ${st.qs.length}</div>
+        <div class="msg">${perfect ? "パーフェクト! はなまる!" : st.correct >= 3 ? "よくできました!" : "つぎはできるよ、ファイト!"}</div>
+        <div class="flash-actions" style="margin-top:16px">
+          <button class="btn" id="toBook">スタンプ帳</button>
+          <button class="btn primary" id="again">もういちど</button>
+        </div>
+      </div>`;
+    view.querySelector("#again").onclick = () => { quizState = null; render(); };
+    view.querySelector("#toBook").onclick = () => setTab("book");
+    return;
+  }
+
+  const q = st.qs[st.pos];
+  const d = q.d;
+  const isFill = q.type === "fill";
+  view.innerHTML = `
+    <div class="qcount">だい ${st.pos + 1} もん / ${st.qs.length} もん</div>
+    <div class="qdots">
+      ${st.qs.map((_, i) =>
+        `<span class="${st.marks[i] === true ? "hit" : st.marks[i] === false ? "miss" : ""}"></span>`
+      ).join("")}
+    </div>
+    <div class="card quiz-q">
+      <div class="ask">${isFill ? "［ ？ ］に入ることばはどれ?" : "このかんようくの意味はどれ?"}</div>
+      <div class="idiom-big">${isFill ? blankHTML(d.t, d.key) : rubyHTML(d.t)}</div>
+    </div>
+    <div class="choices">
+      ${q.choices.map((c, i) =>
+        `<button class="choice" data-i="${i}">${isFill ? keyLabel(c) : esc(c)}</button>`
+      ).join("")}
+    </div>`;
+  view.querySelectorAll(".choice").forEach(btn => {
+    btn.onclick = () => {
+      if (st.answered) return;
+      st.answered = true;
+      const picked = q.choices[+btn.dataset.i];
+      const ok = picked === q.answer;
+      st.marks[st.pos] = ok;
+      if (ok) { st.correct++; learned.add(d.id); persist(); }
+      view.querySelectorAll(".choice").forEach(b => {
+        b.disabled = true;
+        const val = q.choices[+b.dataset.i];
+        if (val === q.answer) b.classList.add("correct");
+        else if (b === btn) b.classList.add("wrong");
+      });
+      showHanko(ok);
+      setTimeout(() => {
+        st.pos++; st.answered = false;
+        render();
+      }, ok ? 1100 : 1800);
+    };
+  });
+}
+
+function hanamaruSVG() {
+  return `<svg class="hanamaru" viewBox="0 0 100 100" aria-label="はなまる">
+    <path d="M50 14
+      C58 4, 74 8, 76 20 C90 18, 98 32, 90 42 C100 50, 96 66, 84 68
+      C86 82, 72 92, 61 85 C55 96, 39 96, 33 85 C22 92, 8 84, 11 71
+      C-1 66, -2 50, 9 44 C2 33, 10 19, 24 21 C27 8, 43 5, 50 14 Z"
+      fill="none" stroke="var(--shu)" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="50" cy="52" r="17" fill="none" stroke="var(--shu)" stroke-width="5"/>
+  </svg>`;
+}
+
+/* ---- ずかん ---- */
+function renderBook() {
+  const groups = Object.entries(CATS).map(([k, c]) => {
+    const items = IDIOMS.filter(d => d.cat === k);
+    return `
+      <div class="zk-group">
+        <div class="section-label">${c.ico} ${c.name}(${items.filter(d => learned.has(d.id)).length}/${items.length})</div>
+        <div class="zk-list">
+          ${items.map(d => `
+            <button class="zk-item" data-id="${d.id}">
+              <span class="head">
+                <span class="chip ${c.cls}">${c.name}</span>
+                ${rubyHTML(d.t)}
+                <span class="star">${learned.has(d.id) ? "⭐" : "☆"}</span>
+              </span>
+              <span class="detail">
+                ${esc(d.imi)}
+                <div class="rei">📝 ${rubyHTML(d.rei)}</div>
+              </span>
+            </button>`).join("")}
+        </div>
+      </div>`;
+  }).join("");
+
+  const stamps = save.stamps.length
+    ? save.stamps.map(s =>
+        `<div class="stamp ${s.score === s.total ? "perfect" : ""}">
+          <span class="s">${s.score === s.total ? "花" : "◯"}</span>
+          ${s.score}/${s.total}<span>${esc(s.date)}</span>
+        </div>`).join("")
+    : `<div class="empty">クイズをクリアすると、ここにスタンプがたまるよ!</div>`;
+
+  view.innerHTML = `
+    ${groups}
+    <div class="section-label">🏅 スタンプ帳</div>
+    <div class="card stamp-shelf">${stamps}</div>`;
+  view.querySelectorAll(".zk-item").forEach(b => {
+    b.onclick = () => b.classList.toggle("open");
+  });
+}
+
+/* ======== 起動 ======== */
+document.querySelectorAll(".navbtn").forEach(b => {
+  b.onclick = () => setTab(b.dataset.tab);
+});
+const soundBtn = document.getElementById("soundBtn");
+function syncSound() { soundBtn.textContent = save.sound ? "🔊" : "🔇"; }
+soundBtn.onclick = () => { save.sound = !save.sound; persist(); syncSound(); };
+syncSound();
+render();
+</script>
